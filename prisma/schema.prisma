@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String        @unique @default(uuid())
+  name      String
+  email     String        @unique
+  password  String
+  coins     Float
+  pokemons  UserPokemon[]
+  create_at DateTime      @default(now())
+}
+
+model Adim {
+  id         String   @unique @default(uuid())
+  name       String
+  email      String   @unique
+  password   String
+  permission String
+  create_at  DateTime @default(now())
+}
+
+model UserPokemon {
+  id        String   @unique @default(uuid())
+  title     String
+  url       String
+  userId    String
+  user      User?    @relation(fields: [userId], references: [id])
+  create_at DateTime @default(now())
+
+  attributes Attribute[]
+
+  @@id([id])
+}
+
+model Attribute {
+  id          String        @unique @default(uuid())
+  name        String        @unique
+  colorRex    String        @unique
+  create_at   DateTime      @default(now())
+  pokemons    Pokemon[]
+  userPokemon UserPokemon[]
+
+  @@id([id])
+}
+
+model Pokemon {
+  id        String   @unique @default(uuid())
+  title     String
+  url       String
+  price     Float
+  quant     Int
+  amount    Int
+  create_at DateTime @default(now())
+
+  attributes Attribute[]
+
+  @@id([id])
+}
+
+// model PokemonAttribute {
+//   id String @unique @default(uuid())
+
+//   attributeId String
+//   attribute   Attribute @relation(fields: [attributeId], references: [id])
+
+//   pokemonId String
+//   pokemon   Pokemon @relation(fields: [pokemonId], references: [id])
+
+//   @@unique([attributeId, pokemonId])
+// }
+
+model InvalidTokens {
+  id        String   @unique @default(uuid())
+  token     String
+  create_at DateTime @default(now())
+}
+
+model Coins {
+  id          String   @unique @default(uuid())
+  name        String
+  coinsQuant  Float
+  price       Float
+  description String
+  create_at   DateTime @default(now())
+}
